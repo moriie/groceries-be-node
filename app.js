@@ -10,6 +10,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var sessionsRouter = require('./routes/sessions')
 
 var app = express();
 
@@ -41,6 +42,28 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/sessions', sessionsRouter)
+
+const isLoggedIn = (req, res, next) => {_
+  const token = req.headers["x-access-token"]?.split(' ')[1]
+
+  if (token) {
+      jwt.verify(token, process.env.SECRET), (err, decoded) => {
+          if (err) return res.json({
+              isLoggedIn: false,
+              messaged: "Failed to Authenticate"
+          })
+          req.user = {};
+          req.user.id = decoded.id
+          req.user.username = decoded.username
+          next()
+      
+      }
+  }
+  else {
+      res.json({message: "Incorrect Token", isLoggedIn: false})
+  }
+}
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
