@@ -2,6 +2,8 @@ require("dotenv").config();
 
 var createError = require('http-errors');
 var express = require('express');
+var bodyParser = require("body-parser")
+var mongoose = require("mongoose")
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -11,25 +13,21 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
+var urlencodedParser = bodyParser.urlencoded({extended: false})
+app.use(bodyParser.json(), urlencodedParser)
+
 const port = 8000;
 const dbo = require("./db/conn");
 const dbURI = `mongodb+srv://${process.env.DBUN}:${process.env.DBPW}@cluster0.2zocm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`
 
-mongodb.connect(
-  dbURI,
-  { useNewUrlParser: true, useUnifiedTopology: true },
-  function (err, client) {
-    db = client.db()
-    app.listen(port, () => {
-      // perform a database connection when server starts
-      dbo.connectToServer(function (err) {
-        if (err) console.error(err);
-     
-      });
-      console.log(`Server is running on port: ${port}`);
-    });
-  }
-)
+mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+.then((res)=>{
+  app.listen(port, () => {
+    console.log(`Server is running on port: ${port}`);
+  })
+})
+.catch(err=>console.log(err))
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
