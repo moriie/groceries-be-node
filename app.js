@@ -18,7 +18,6 @@ var urlencodedParser = bodyParser.urlencoded({extended: false})
 app.use(bodyParser.json(), urlencodedParser)
 
 const port = 8000;
-const dbo = require("./db/conn");
 const dbURI = `mongodb+srv://${process.env.DBUN}:${process.env.DBPW}@cluster0.2zocm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`
 
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
