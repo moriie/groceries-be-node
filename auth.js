@@ -1,4 +1,5 @@
 require("dotenv").config();
+const jwt = require('jsonwebtoken')
 
 const isLoggedIn = (req, res, next) => {_
     const token = req.headers["x-access-token"]?.split(' ')[1]
@@ -20,3 +21,5 @@ const isLoggedIn = (req, res, next) => {_
         res.json({message: "Incorrect Token", isLoggedIn: false})
     }
 }
+
+module.exports = isLoggedIn

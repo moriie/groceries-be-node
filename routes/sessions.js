@@ -1,9 +1,10 @@
-var express = require('express');
+const express = require('express');
 const User = require('../models/user');
-var router = express.Router();
+const router = express.Router();
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 router.post('/login', (req,res)=> {
-  
     const userLoggingIn = req.body;
 
     User.findOne({username: userLoggingIn.username})

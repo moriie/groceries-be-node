@@ -8,6 +8,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+var cors = require('cors');
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var sessionsRouter = require('./routes/sessions')
@@ -18,7 +20,7 @@ var urlencodedParser = bodyParser.urlencoded({extended: false})
 app.use(bodyParser.json(), urlencodedParser)
 
 const port = 8000;
-const dbURI = `mongodb+srv://${process.env.DBUN}:${process.env.DBPW}@cluster0.2zocm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`
+const dbURI = `mongodb+srv://${process.env.DBUN}:${process.env.DBPW}@cluster0.2zocm.mongodb.net/${process.env.DB}?retryWrites=true&w=majority`
 
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
 .then((res)=>{
@@ -39,30 +41,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(cors())
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/sessions', sessionsRouter)
 
-const isLoggedIn = (req, res, next) => {_
-  const token = req.headers["x-access-token"]?.split(' ')[1]
-
-  if (token) {
-      jwt.verify(token, process.env.SECRET), (err, decoded) => {
-          if (err) return res.json({
-              isLoggedIn: false,
-              messaged: "Failed to Authenticate"
-          })
-          req.user = {};
-          req.user.id = decoded.id
-          req.user.username = decoded.username
-          next()
-      
-      }
-  }
-  else {
-      res.json({message: "Incorrect Token", isLoggedIn: false})
-  }
-}
+// app.use((req, res, next)=>{
+//   res.setHeader('Access-Control-Allow-Origin', '*');
+//   next();
+// })
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
