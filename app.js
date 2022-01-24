@@ -1,26 +1,34 @@
 require("dotenv").config();
 
-var createError = require('http-errors');
-var express = require('express');
-var bodyParser = require("body-parser")
-var mongoose = require("mongoose")
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const app = express();
+const createError = require('http-errors');
+const express = require('express');
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 
-var cors = require('cors');
+const cors = require('cors');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var sessionsRouter = require('./routes/sessions')
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const sessionsRouter = require('./routes/sessions');
+const basketsRouter = require('./routes/baskets');
 
-var app = express();
-
-var urlencodedParser = bodyParser.urlencoded({extended: false})
-app.use(bodyParser.json(), urlencodedParser)
+const urlencodedParser = bodyParser.urlencoded({extended: false})
 
 const port = 8000;
-const dbURI = `mongodb+srv://${process.env.DBUN}:${process.env.DBPW}@cluster0.2zocm.mongodb.net/${process.env.DB}?retryWrites=true&w=majority`
+const dbURI = `mongodb+srv://${process.env.DBUN}:${process.env.DBPW}@cluster0.2zocm.mongodb.net/${process.env.DB}?retryWrites=true&w=majority`;
+
+app.use(bodyParser.json(), urlencodedParser);
+
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+app.use('/sessions', sessionsRouter);
+app.use('/baskets', basketsRouter);
+
+app.use(cors());
 
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
 .then((res)=>{
@@ -40,17 +48,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.use(cors())
-
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/sessions', sessionsRouter)
-
-// app.use((req, res, next)=>{
-//   res.setHeader('Access-Control-Allow-Origin', '*');
-//   next();
-// })
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
