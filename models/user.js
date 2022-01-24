@@ -13,6 +13,10 @@ const userSchema  = mongoose.Schema({
         type: String,
         required: true,
     },
+    // baskets: [{
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Basket'
+    // }]
 
 }, {timestamps: true})
 

@@ -11,7 +11,11 @@ const basketSchema = mongoose.Schema({
     },
     items: {
         type: Array,
-    }
+    },
+    owner: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }]
 }, {timestamps: true})
 
 const Basket = mongoose.model('Basket', basketSchema)

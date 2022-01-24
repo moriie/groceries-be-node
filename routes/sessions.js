@@ -31,7 +31,8 @@ router.post('/login', (req,res)=> {
                 }
                 return res.json({
                 message: "Success!",
-                token: token
+                token: token,
+                id: User._id
                 })
             }
             )
